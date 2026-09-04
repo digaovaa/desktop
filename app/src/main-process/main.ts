@@ -246,6 +246,21 @@ async function handleCommandLineArguments(argv: string[]) {
     boolean: ['protocol-launcher'],
   })
 
+  // Linux desktop entries pass custom protocol URLs directly as positional
+  // arguments. Preserve that integration after the cross-platform CLI parser
+  // refactor so OAuth and "Open in Desktop" links reach the running app.
+  if (__LINUX__) {
+    const prefixes = Array.from(possibleProtocols, p => `${p}://`)
+    const matchingUrl = argv.find(arg =>
+      prefixes.some(prefix => arg.startsWith(prefix))
+    )
+
+    if (matchingUrl) {
+      handleAppURL(matchingUrl)
+      return
+    }
+  }
+
   // Desktop registers it's protocol handler callback on Windows as
   // `[executable path] --protocol-launcher "%1"`. Note that extra command
   // line arguments might be added by Chromium
