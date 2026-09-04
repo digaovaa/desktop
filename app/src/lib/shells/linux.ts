@@ -30,7 +30,6 @@ export enum Shell {
   Warp = 'Warp',
   Ghostty = 'Ghostty',
   BlackBox = 'Black Box',
-  Ptyxis = 'Ptyxis',
 }
 
 export const Default = Shell.Gnome
@@ -83,8 +82,6 @@ function getShellPath(shell: Shell): Promise<string | null> {
       return getPathIfAvailable('/usr/bin/ghostty')
     case Shell.BlackBox:
       return getPathIfAvailable('/usr/bin/blackbox-terminal')
-    case Shell.Ptyxis:
-      return getPathIfAvailable('/usr/bin/ptyxis')
     default:
       return assertNever(shell, `Unknown shell: ${shell}`)
   }
@@ -113,7 +110,6 @@ export async function getAvailableShells(): Promise<
     warpPath,
     ghosttyPath,
     blackBoxPath,
-    ptyxisPath,
   ] = await Promise.all([
     getShellPath(Shell.Gnome),
     getShellPath(Shell.GnomeConsole),
@@ -134,7 +130,6 @@ export async function getAvailableShells(): Promise<
     getShellPath(Shell.Warp),
     getShellPath(Shell.Ghostty),
     getShellPath(Shell.BlackBox),
-    getShellPath(Shell.Ptyxis),
   ])
 
   const shells: Array<FoundShell<Shell>> = []
@@ -144,10 +139,6 @@ export async function getAvailableShells(): Promise<
 
   if (gnomeConsolePath) {
     shells.push({ shell: Shell.GnomeConsole, path: gnomeConsolePath })
-  }
-
-  if (ptyxisPath) {
-    shells.push({ shell: Shell.Ptyxis, path: ptyxisPath })
   }
 
   if (mateTerminalPath) {
@@ -261,11 +252,6 @@ export function launch(
       return spawn(foundShell.path, ['--working-directory=' + path])
     case Shell.Warp:
       return spawn(foundShell.path, [], { cwd: path })
-    case Shell.Ptyxis:
-      return spawn(foundShell.path, [
-        '--new-window',
-        '--working-directory=' + path,
-      ])
     default:
       return assertNever(shell, `Unknown shell: ${shell}`)
   }
