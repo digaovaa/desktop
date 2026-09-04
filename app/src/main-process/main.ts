@@ -108,6 +108,12 @@ if (__DEV_SECRETS__) {
 } else {
   possibleProtocols.add('x-github-desktop-auth')
 }
+// Community Linux builds use the development OAuth application credentials
+// when official release credentials are unavailable. Accept its callback in
+// production builds as well so browser-based sign-in can complete.
+if (__LINUX__) {
+  possibleProtocols.add('x-github-desktop-dev-auth')
+}
 // Also support Desktop Classic's protocols.
 if (__DARWIN__) {
   possibleProtocols.add('github-mac')
