@@ -1,5 +1,6 @@
 import { pathExists } from '../path-exists'
 import { IFoundEditor } from './found-editor'
+import untildify from 'untildify'
 
 /** Represents an external editor on Linux */
 interface ILinuxExternalEditor {
@@ -53,6 +54,26 @@ const editors: ILinuxExternalEditor[] = [
       '/usr/bin/code-insiders',
       '/var/lib/flatpak/app/com.visualstudio.code.insiders/current/active/export/bin/com.visualstudio.code.insiders',
       '.local/share/flatpak/app/com.visualstudio.code.insiders/current/active/export/bin/com.visualstudio.code.insiders',
+    ],
+  },
+  {
+    name: 'Cursor',
+    paths: [
+      '/usr/bin/cursor',
+      '/usr/share/cursor/bin/cursor',
+      '/snap/bin/cursor',
+      '~/.local/bin/cursor',
+      '~/.local/opt/cursor/Cursor.AppImage',
+    ],
+  },
+  {
+    name: 'Windsurf',
+    paths: [
+      '/usr/bin/windsurf',
+      '/usr/share/windsurf/bin/windsurf',
+      '/snap/bin/windsurf',
+      '~/.local/bin/windsurf',
+      '~/.local/opt/windsurf/Windsurf.AppImage',
     ],
   },
   {
@@ -215,8 +236,9 @@ const editors: ILinuxExternalEditor[] = [
 
 async function getAvailablePath(paths: string[]): Promise<string | null> {
   for (const path of paths) {
-    if (await pathExists(path)) {
-      return path
+    const expandedPath = untildify(path)
+    if (await pathExists(expandedPath)) {
+      return expandedPath
     }
   }
 
