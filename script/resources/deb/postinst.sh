@@ -2,23 +2,19 @@
 
 set -e
 
-PROFILE_D_FILE="/etc/profile.d/github-desktop.sh"
-INSTALL_DIR="/usr/lib/github-desktop"
-CLI_DIR="$INSTALL_DIR/resources/app/static"
+INSTALL_DIR="/usr/lib/desktop"
 
 case "$1" in
     configure)
-      # add executable permissions for CLI interface
-      chmod +x "$CLI_DIR"/github || :
-      # check if this is a dev install or standard
-      if [ -f "$INSTALL_DIR/github-desktop-dev" ]; then
-	      BINARY_NAME="github-desktop-dev"
-      else
-	      BINARY_NAME="github-desktop"
+      # Match the Electron WM_CLASS so GNOME associates the running window
+      # with its desktop entry and displays the packaged application icon.
+      if command -v desktop-file-edit >/dev/null 2>&1; then
+        desktop-file-edit \
+          --set-key=StartupWMClass \
+          --set-value="GitHub Desktop" \
+          /usr/share/applications/desktop.desktop
       fi
-      # create symbolic links to /usr/bin directory
-      ln -f -s "$INSTALL_DIR"/$BINARY_NAME /usr/bin || :
-      ln -f -s "$CLI_DIR"/github /usr/bin || :
+      gtk-update-icon-cache -q -f /usr/share/icons/hicolor || :
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
