@@ -30,6 +30,8 @@ type DebianOptions = {
   dest: string
   arch: 'amd64' | 'i386' | 'arm64' | 'armhf'
   // optional
+  name?: string
+  bin?: string
   description?: string
   productDescription?: string
   categories?: Array<string>
@@ -52,6 +54,8 @@ const options: DebianOptions = {
   src: getDistPath(),
   dest: distRoot,
   arch: getArchitecture(),
+  name: 'github-desktop',
+  bin: 'github-desktop',
   description: 'Simple collaboration from your desktop',
   productDescription:
     'This is the unofficial port of GitHub Desktop for Linux distributions',

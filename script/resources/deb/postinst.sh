@@ -2,7 +2,7 @@
 
 set -e
 
-INSTALL_DIR="/usr/lib/desktop"
+INSTALL_DIR="/usr/lib/github-desktop"
 
 case "$1" in
     configure)
@@ -12,7 +12,7 @@ case "$1" in
         desktop-file-edit \
           --set-key=StartupWMClass \
           --set-value="GitHub Desktop" \
-          /usr/share/applications/desktop.desktop
+          /usr/share/applications/github-desktop.desktop
       fi
       gtk-update-icon-cache -q -f /usr/share/icons/hicolor || :
     ;;
